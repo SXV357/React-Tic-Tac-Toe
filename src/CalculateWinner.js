@@ -1,4 +1,5 @@
 /*Function utilized from this tutorial: https://reactjs.org/tutorial/tutorial.html*/
+/* Traverses through all possible winning combinations and determines the winner based off of that */
 
 export function calculateWinner(squares) {
   // param: current board state

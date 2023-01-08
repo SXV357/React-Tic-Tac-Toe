@@ -15,8 +15,8 @@ export default function Board({ squares, onClick }) {
         marginTop: "75px",
       }}
     >
-      {squares.map((square, i) => (
-        <Square key={i} value={square} onClick={() => onClick(i)} />
+      {squares.map((val, idx) => (
+        <Square key={idx} value={val} onClick={() => onClick(idx)} />
       ))}
     </div>
   );
