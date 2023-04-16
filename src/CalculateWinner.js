@@ -1,10 +1,12 @@
-/*Function utilized from this tutorial: https://reactjs.org/tutorial/tutorial.html*/
+/* Function borrowed from this resource with minor modifications: https://reactjs.org/tutorial/tutorial.html*/
 /* Traverses through all possible winning combinations and determines the winner based off of that */
 
 export function calculateWinner(squares) {
-  // param: current board state
   const lines = [
-    // all the possible winning combinations
+    // All the winning combinations
+      // 1st 3: Row major traversal(L --> R)
+      // 2nd 3: Column major traversal(T --> B)
+      // Last 2: Diagonal traversal(TL --> BR && TR --> BL)
     [0, 1, 2],
     [3, 4, 5],
     [6, 7, 8],
@@ -13,12 +15,12 @@ export function calculateWinner(squares) {
     [2, 5, 8],
     [0, 4, 8],
     [2, 4, 6],
-  ]; // 1st three(row traversal from L --> R), 2nd three(column traversal from T --> B), last three(diagonal))
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i]; // ES6 destructuring
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      // checks if first value whether it's 'X' or 'O' is equal to next 2 spots and returns that value else null
-      return squares[a];
+  ]; 
+  for (let i = 0; i < Math.max(...lines.map(arr => arr[arr.length - 1])); i++) {
+    for (let j = 0; j < lines.length; j++) {
+      if (squares[lines[j][i]] && squares[lines[j][i]] === squares[lines[j][i+1]] && squares[lines[j][i]] === squares[lines[j][i+2]]) {
+        return squares[lines[j][i]];
+      }
     }
   }
   return null;

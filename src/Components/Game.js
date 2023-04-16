@@ -10,7 +10,7 @@ export default function Game() {
   // history[stepNumber] will equal the board at a particular state
 
   const [xIsNext, setXIsNext] = useState(true); // to determine whether x plays next
-  
+
   const [moves, setMoves] = useState(0);
   const [xScore, setXScore] = useState(0);
   const [oScore, setOScore] = useState(0);
@@ -37,9 +37,9 @@ export default function Game() {
   };
 
   useEffect(() => {
-    if (winner == "X") {
+    if (winner === "X") {
       setXScore((prevScore) => prevScore + 1);
-    } else if (winner == "Y") {
+    } else if (winner === "Y") {
       setOScore((prevScore) => prevScore + 1);
     }
   }, [winner]);
@@ -67,29 +67,18 @@ export default function Game() {
   }
 
   const renderMoves = () =>
-    history.map((_step, move) => {
-      const buttonText = move ? `Go to move #${move}` : "Go to the beginning";
+    history.map((_currState, idx) => {
+      const buttonText = idx ? `Go to move #${idx}` : "Go to the beginning";
       return (
-        <li
-          key={move}
-          style={{
-            listStyleType: "none",
-            display: "flex",
-            flexDirection: "row",
-            maxWidth: "300px",
-            flexWrap: "wrap",
+        <button
+          onClick={() => {
+            setStepNumber(idx);
+            setXIsNext(idx % 2 === 0); // if even then false, if odd then true because O goes after X
+            // ensure that the value for XisNext keeps getting updated as we step from one state to the other
           }}
         >
-          <button
-            onClick={() => {
-              setStepNumber(move);
-              setXIsNext(move % 2 === 0); // if even then false, if odd then true because O goes after X
-              // ensure that the value for XisNext keeps getting updated as we step from one state to the other
-            }}
-          >
-            {buttonText}
-          </button>
-        </li>
+          {buttonText}
+        </button>
       );
     });
 
@@ -97,7 +86,6 @@ export default function Game() {
     <div
       style={{
         display: "flex",
-        flexDirection: "row-reverse",
       }}
     >
       <Board squares={history[stepNumber]} onClick={handleClick} />
@@ -133,7 +121,17 @@ export default function Game() {
             Reset Scores
           </button>
         </div>
-        {renderMoves()}
+        <div
+          style={{
+            maxWidth: 600,
+            display: "flex",
+            flexWrap: "wrap",
+            width: "100%",
+            gap: 10,
+          }}
+        >
+          {renderMoves()}
+        </div>
       </div>
     </div>
   );
