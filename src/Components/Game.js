@@ -17,7 +17,7 @@ export default function Game() {
 
   const winner = calculateWinner(history[stepNumber]); // passing in history[stepNumber] will give the updated winner based on the state of the board
 
-  const style = {
+  const utilStyles = {
     width: "350px",
     maxWidth: "100%",
     margin: "35px auto",
@@ -28,7 +28,7 @@ export default function Game() {
     alignItems: "center",
   };
 
-  const divStyle = {
+  const statistics = {
     display: "flex",
     gap: "30px",
     width: "350px",
@@ -39,7 +39,7 @@ export default function Game() {
   useEffect(() => {
     if (winner === "X") {
       setXScore((prevScore) => prevScore + 1);
-    } else if (winner === "Y") {
+    } else if (winner === "O") {
       setOScore((prevScore) => prevScore + 1);
     }
   }, [winner]);
@@ -86,42 +86,49 @@ export default function Game() {
     <div
       style={{
         display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+        alignItems: "center",
+        marginTop: 100,
       }}
     >
-      <Board squares={history[stepNumber]} onClick={handleClick} />
-      <div style={style}>
-        <button
-          disabled={winner ? false : true}
-          onClick={() => {
-            setHistory([Array(9).fill(null)]);
-            setStepNumber(0);
-            setXIsNext(true);
-            setMoves(0);
-          }}
-        >
-          Re-start game
-        </button>
-        <div style={divStyle}>
-          <h3>
-            {winner
-              ? "Winner: " + winner
-              : "Next player: " + (xIsNext ? "X" : "O")}
-          </h3>
-          <h3>Moves made so far: {moves}</h3>
-        </div>
-        <div style={divStyle}>
-          <h4>X-score: {xScore}</h4>
-          <h4>O-score: {oScore}</h4>
+      <div style={{ display: "inherit", gap: 10, overflowX: "auto" }}> {renderMoves()}</div>
+      <div style={{ display: "flex", gap: 50 }}>
+        <Board squares={history[stepNumber]} onClick={handleClick} />
+        <div style={utilStyles}>
           <button
+            disabled={winner ? false : true}
             onClick={() => {
-              setXScore(0);
-              setOScore(0);
+              setHistory([Array(9).fill(null)]);
+              setStepNumber(0);
+              setXIsNext(true);
+              setMoves(0);
             }}
           >
-            Reset Scores
+            Re-start game
           </button>
+          <div style={statistics}>
+            <h3>
+              {winner
+                ? "Winner: " + winner
+                : "Next player: " + (xIsNext ? "X" : "O")}
+            </h3>
+            <h3>Moves made so far: {moves}</h3>
+          </div>
+          <div style={statistics}>
+            <h4>X-score: {xScore}</h4>
+            <h4>O-score: {oScore}</h4>
+            <button
+              onClick={() => {
+                setXScore(0);
+                setOScore(0);
+              }}
+              disabled = {xScore === 0 && oScore === 0}
+            >
+              Reset Scores
+            </button>
+          </div>
         </div>
-        {renderMoves()}
       </div>
     </div>
   );
