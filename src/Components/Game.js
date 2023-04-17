@@ -121,17 +121,7 @@ export default function Game() {
             Reset Scores
           </button>
         </div>
-        <div
-          style={{
-            maxWidth: 600,
-            display: "flex",
-            flexWrap: "wrap",
-            width: "100%",
-            gap: 10,
-          }}
-        >
-          {renderMoves()}
-        </div>
+        {renderMoves()}
       </div>
     </div>
   );
