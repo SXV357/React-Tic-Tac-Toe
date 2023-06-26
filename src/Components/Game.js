@@ -3,7 +3,11 @@ import Board from "./Board";
 import { calculateWinner } from "../CalculateWinner";
 
 export default function Game() {
-  const [history, setHistory] = useState([Array(9).fill(null)]); // jumping from one state to another and each element in the array will represent the board at that state
+  const [history, setHistory] = useState([{
+    squares: Array(9).fill(null),
+    row: null,
+    col: null
+  }]); // jumping from one state to another and each element in the array will represent the board at that state
   /*For ex: history[0] represents the board after 1 move and history[1] represents the board after move 2*/
 
   const [stepNumber, setStepNumber] = useState(0); // represents what element we're on in history
@@ -14,8 +18,10 @@ export default function Game() {
   const [moves, setMoves] = useState(0);
   const [xScore, setXScore] = useState(0);
   const [oScore, setOScore] = useState(0);
+  const [textArr, setTextArr] = useState([])
+  const [inAscending, setInAscending] = useState(true)
 
-  const winner = calculateWinner(history[stepNumber]); // passing in history[stepNumber] will give the updated winner based on the state of the board
+  const winner = calculateWinner(history[stepNumber].squares); // passing in history[stepNumber] will give the updated winner based on the state of the board
 
   const utilStyles = {
     width: "350px",
@@ -45,18 +51,25 @@ export default function Game() {
   }, [winner]);
 
   function handleClick(i) {
+
+    setHistory(prevHistory => [...prevHistory, {row: 0, col: 0}])
+
     // slice out history that's not needed(since jumping from one state to another, don't need to save states after the current one: The current one will keep changing based on the moves the user makes)
     const timeInHistory = history.slice(0, stepNumber + 1); // yields most current state
 
     const currentMove = timeInHistory[stepNumber]; // most current move(since timeInHistory stores states only after the most current stepNumber)
 
-    const copy = [...currentMove]; // make a copy because state is being mutated
+    const copy = [...currentMove.squares]; // make a copy because state is being mutated
 
     if (winner || copy[i]) return; // if a value already exists in a square or winner return
 
     copy[i] = xIsNext ? "X" : "O"; // determining whether to put an X or O in the square
 
-    setHistory([...timeInHistory, copy]); // want to update state as well as most current state
+    const square = i+1;
+    let row = calculateRow(square); 
+    let col = calculateCol(square);
+
+    setHistory([...timeInHistory, {squares: copy, row: row, col: col}]); // want to update state as well as most current state
     // adding copy at the end will add one array to history
 
     setStepNumber(timeInHistory.length); // will keep adding up as new moves are made now that copy is being added
@@ -66,21 +79,44 @@ export default function Game() {
     setXIsNext(!xIsNext); // alternating between X and O
   }
 
-  const renderMoves = () =>
-    history.map((_currState, idx) => {
-      const buttonText = idx ? `Go to move #${idx}` : "Go to the beginning";
-      return (
-        <button
-          onClick={() => {
-            setStepNumber(idx);
-            setXIsNext(idx % 2 === 0); // if even then false, if odd then true because O goes after X
-            // ensure that the value for XisNext keeps getting updated as we step from one state to the other
-          }}
-        >
-          {buttonText}
-        </button>
-      );
+  const calculateRow = (square) => {
+    if (square >= 1 && square <= 3) return 1;
+    else if (square >= 4 && square <= 6) return 2;
+    return 3;
+  }
+
+  const calculateCol = (square) => {
+    return square === 1 || square === 4 || square === 7 ? 1 : square === 2 || square === 5 || square === 8 ? 2 : 3
+  }
+
+  // useEffect(() => {
+  //   console.log("At step number " + stepNumber + ", board state: " + JSON.stringify(history[stepNumber]))
+  // }, [history, stepNumber])
+
+
+  useEffect(() => {
+    const buttonTexts = history.map((currState, idx) => {
+      return idx
+        ? `Go to move #${idx}(Row ${currState.row}, Column ${currState.col})`
+        : "Go to the beginning";
     });
+
+    setTextArr(prevArr => Array.from(new Set([...prevArr, ...buttonTexts])));
+  }, [history]);
+
+  const moveElems = () => {
+  let modifiedArr = !inAscending ? textArr.slice().reverse() : textArr; 
+   return modifiedArr.map((text, idx) => {
+    return (
+      <button onClick = {() => {
+        setStepNumber(idx);
+        setXIsNext(idx % 2 === 0)
+      }}>
+        {text}
+      </button>
+    )
+  }) 
+  }
 
   return (
     <div
@@ -92,14 +128,19 @@ export default function Game() {
         marginTop: 100,
       }}
     >
-      <div style={{ display: "inherit", gap: 10, overflowX: "auto" }}> {renderMoves()}</div>
+      <div style={{ display: "inherit", gap: 10, overflowX: "auto" }}>{moveElems()}</div>
+      <div>
+        <button onClick = {() => setInAscending(prevOrder => !prevOrder)}>
+          {inAscending ? "Display in descending order" : "Display in ascending order"}
+        </button>
+      </div>
       <div style={{ display: "flex", gap: 50 }}>
-        <Board squares={history[stepNumber]} onClick={handleClick} />
+        <Board squares={history[stepNumber].squares} onClick={handleClick} />
         <div style={utilStyles}>
           <button
             disabled={winner ? false : true}
             onClick={() => {
-              setHistory([Array(9).fill(null)]);
+              setHistory([{squares: Array(9).fill(null), row: null, col: null}]);
               setStepNumber(0);
               setXIsNext(true);
               setMoves(0);
