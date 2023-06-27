@@ -1,23 +1,32 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Square from "./Square";
+import { gridStyle } from "../styles";
 
-export default function Board({ squares, onClick }) {
+export default function Board({ squares, onClick, winner, combination, isDraw }) {
+
+  const [winningSquares, setWinningSquares] = useState([])
+
+  useEffect(() => {
+    if (combination != null){
+      setWinningSquares(prevWinningSquares => {
+        const matchedSquares = combination.map(winningSquare => (
+          {
+            match: winningSquare,
+            isHighlighted: true
+          }
+        ))
+        return [...prevWinningSquares, ...matchedSquares]
+      })
+    }
+  }, [combination])
+
   return (
-    <div
-      style={{
-        border: "4px solid darkblue",
-        borderRadius: "10px",
-        width: "350px",
-        height: "350px",
-        margin: "0 auto",
-        display: "grid",
-        gridTemplate: "repeat(3, 1fr) / repeat(3, 1fr)",
-        marginTop: "75px",
-      }}
-    >
-      {squares.map((val, idx) => (
-        <Square key={idx} value={val} onClick={() => onClick(idx)} />
-      ))}
+    <div style={gridStyle}>
+      {squares.map((val, idx) => {
+        let currentSquare = idx;
+        let isHighlighted = winningSquares.some(winningElem => winningElem.match === currentSquare);
+        return <Square key={currentSquare} value={val} onClick={() => onClick(currentSquare)} winner = {winner} isHighlighted = {isHighlighted} isDraw = {isDraw}/>
+      })}
     </div>
   );
 }

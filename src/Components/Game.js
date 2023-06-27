@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Board from "./Board";
 import { calculateWinner } from "../CalculateWinner";
+import { utilStyles, statistics, boardStyle, moveInfoStyle } from "../styles";
 
 export default function Game() {
   const [history, setHistory] = useState([{
@@ -20,27 +21,10 @@ export default function Game() {
   const [oScore, setOScore] = useState(0);
   const [textArr, setTextArr] = useState([])
   const [inAscending, setInAscending] = useState(true)
+  const [isDraw, setIsDraw] = useState(false);
+  const [drawMessage, setDrawMessage] = useState("")
 
-  const winner = calculateWinner(history[stepNumber].squares); // passing in history[stepNumber] will give the updated winner based on the state of the board
-
-  const utilStyles = {
-    width: "350px",
-    maxWidth: "100%",
-    margin: "35px auto",
-    display: "flex",
-    flexDirection: "column",
-    gap: "10px",
-    justifyContent: "center",
-    alignItems: "center",
-  };
-
-  const statistics = {
-    display: "flex",
-    gap: "30px",
-    width: "350px",
-    justifyContent: "center",
-    alignItems: "center",
-  };
+  const {winner, combination} = calculateWinner(history[stepNumber].squares) || {}; // passing in history[stepNumber] will give the updated winner based on the state of the board
 
   useEffect(() => {
     if (winner === "X") {
@@ -89,11 +73,6 @@ export default function Game() {
     return square === 1 || square === 4 || square === 7 ? 1 : square === 2 || square === 5 || square === 8 ? 2 : 3
   }
 
-  // useEffect(() => {
-  //   console.log("At step number " + stepNumber + ", board state: " + JSON.stringify(history[stepNumber]))
-  // }, [history, stepNumber])
-
-
   useEffect(() => {
     const buttonTexts = history.map((currState, idx) => {
       return idx
@@ -118,24 +97,37 @@ export default function Game() {
   }) 
   }
 
+  useEffect(() => {
+    if (history[stepNumber].squares.every(value => value != null && !winner)){
+      setIsDraw(true)
+      setDrawMessage("Draw!");
+    }
+  }, [history, stepNumber, winner])
+
+  const determineWinnerMessage = () => {
+    let won = "";
+    if (winner && !isDraw){
+      won = "Winner: " + winner;
+    }
+    else if (!winner && !isDraw){
+      won = "Next player: " + (xIsNext ? "X" : "O");
+    }
+    else if (!winner && isDraw){
+      won = drawMessage;
+    }
+    return won;
+  }
+
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        justifyContent: "center",
-        alignItems: "center",
-        marginTop: 100,
-      }}
-    >
-      <div style={{ display: "inherit", gap: 10, overflowX: "auto" }}>{moveElems()}</div>
-      <div>
+    <div style={boardStyle}>
+      <div style={moveInfoStyle}>{moveElems()}</div>
+      <div style = {{marginTop: 25}}>
         <button onClick = {() => setInAscending(prevOrder => !prevOrder)}>
           {inAscending ? "Display in descending order" : "Display in ascending order"}
         </button>
       </div>
       <div style={{ display: "flex", gap: 50 }}>
-        <Board squares={history[stepNumber].squares} onClick={handleClick} />
+        <Board squares={history[stepNumber].squares} onClick={handleClick} winner = {winner} combination = {combination} isDraw = {isDraw}/>
         <div style={utilStyles}>
           <button
             disabled={winner ? false : true}
@@ -150,9 +142,7 @@ export default function Game() {
           </button>
           <div style={statistics}>
             <h3>
-              {winner
-                ? "Winner: " + winner
-                : "Next player: " + (xIsNext ? "X" : "O")}
+              {determineWinnerMessage()}
             </h3>
             <h3>Moves made so far: {moves}</h3>
           </div>

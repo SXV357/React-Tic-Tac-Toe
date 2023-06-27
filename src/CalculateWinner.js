@@ -19,7 +19,7 @@ export function calculateWinner(squares) {
   for (let i = 0; i < Math.max(...lines.map(arr => arr[arr.length - 1])); i++) {
     for (let j = 0; j < lines.length; j++) {
       if (squares[lines[j][i]] && squares[lines[j][i]] === squares[lines[j][i+1]] && squares[lines[j][i]] === squares[lines[j][i+2]]) {
-        return squares[lines[j][i]];
+        return {winner: squares[lines[j][i]], combination: lines[j]};
       }
     }
   }

@@ -1,10 +1,11 @@
 import React from "react";
 
-export default function Square({ onClick, value }) {
+export default function Square({ onClick, value, winner, isHighlighted, isDraw }) {
+
   return (
     <button
       style={{
-        background: "lightblue",
+        background: winner != null && isHighlighted ? "#0FFF50" : "#00FFFF",
         border: "2px solid darkblue",
         fontSize: "30px",
         fontWeight: "800",
@@ -12,7 +13,7 @@ export default function Square({ onClick, value }) {
         outline: "none",
       }}
       onClick={onClick}
-    >
+      disabled = {winner || isDraw}>
       {value}
     </button>
   );
