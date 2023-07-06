@@ -122,7 +122,7 @@ export default function Game() {
     <div style={boardStyle}>
       <div style={moveInfoStyle}>{moveElems()}</div>
       <div style = {{marginTop: 25}}>
-        <button onClick = {() => setInAscending(prevOrder => !prevOrder)}>
+        <button onClick = {() => setInAscending(prevOrder => !prevOrder)} disabled = {history.length == 1}>
           {inAscending ? "Display in descending order" : "Display in ascending order"}
         </button>
       </div>
@@ -130,12 +130,14 @@ export default function Game() {
         <Board squares={history[stepNumber].squares} onClick={handleClick} winner = {winner} combination = {combination} isDraw = {isDraw}/>
         <div style={utilStyles}>
           <button
-            disabled={winner ? false : true}
+            disabled={winner || isDraw ? false : true}
             onClick={() => {
               setHistory([{squares: Array(9).fill(null), row: null, col: null}]);
               setStepNumber(0);
               setXIsNext(true);
               setMoves(0);
+              setTextArr([]);
+              setIsDraw(false);
             }}
           >
             Re-start game
