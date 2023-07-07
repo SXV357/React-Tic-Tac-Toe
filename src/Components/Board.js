@@ -1,6 +1,5 @@
 import React, {useState, useEffect} from "react";
 import Square from "./Square";
-import { gridStyle } from "../styles";
 
 export default function Board({ squares, onClick, winner, combination, isDraw }) {
 
@@ -21,7 +20,7 @@ export default function Board({ squares, onClick, winner, combination, isDraw })
   }, [combination])
 
   return (
-    <div style={gridStyle}>
+    <div className = "gridStyle">
       {squares.map((val, idx) => {
         let currentSquare = idx;
         let isHighlighted = winningSquares.some(winningElem => winningElem.match === currentSquare);

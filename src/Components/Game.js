@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Board from "./Board";
 import { calculateWinner } from "../CalculateWinner";
-import { utilStyles, statistics, boardStyle, moveInfoStyle } from "../styles";
 
 export default function Game() {
   const [history, setHistory] = useState([{
@@ -90,6 +89,7 @@ export default function Game() {
       <button onClick = {() => {
         setStepNumber(idx);
         setXIsNext(idx % 2 === 0)
+        setMoves(idx); // ensure move count history is also displayed alongside player turn
       }}>
         {text}
       </button>
@@ -119,16 +119,20 @@ export default function Game() {
   }
 
   return (
-    <div style={boardStyle}>
-      <div style={moveInfoStyle}>{moveElems()}</div>
+    <div className = "boardStyle">
+
+      <div className = "moveInfoStyle">{moveElems()}</div>
+
       <div style = {{marginTop: 25}}>
-        <button onClick = {() => setInAscending(prevOrder => !prevOrder)} disabled = {history.length == 1}>
+        <button onClick = {() => setInAscending(prevOrder => !prevOrder)} disabled = {history.length === 1}>
           {inAscending ? "Display in descending order" : "Display in ascending order"}
         </button>
       </div>
-      <div style={{ display: "flex", gap: 50 }}>
+
+      <div className = "board-and-statistics">
         <Board squares={history[stepNumber].squares} onClick={handleClick} winner = {winner} combination = {combination} isDraw = {isDraw}/>
-        <div style={utilStyles}>
+
+        <div className = "utilStyle">
           <button
             disabled={winner || isDraw ? false : true}
             onClick={() => {
@@ -142,13 +146,15 @@ export default function Game() {
           >
             Re-start game
           </button>
-          <div style={statistics}>
+
+          <div className = "statistics">
             <h3>
               {determineWinnerMessage()}
             </h3>
             <h3>Moves made so far: {moves}</h3>
           </div>
-          <div style={statistics}>
+
+          <div className = "statistics">
             <h4>X-score: {xScore}</h4>
             <h4>O-score: {oScore}</h4>
             <button
@@ -161,6 +167,7 @@ export default function Game() {
               Reset Scores
             </button>
           </div>
+
         </div>
       </div>
     </div>
