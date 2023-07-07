@@ -86,7 +86,7 @@ export default function Game() {
   let modifiedArr = !inAscending ? textArr.slice().reverse() : textArr; 
    return modifiedArr.map((text, idx) => {
     return (
-      <button onClick = {() => {
+      <button className = "moveInfoButton" onClick = {() => {
         setStepNumber(idx);
         setXIsNext(idx % 2 === 0)
         setMoves(idx); // ensure move count history is also displayed alongside player turn
@@ -124,16 +124,17 @@ export default function Game() {
       <div className = "moveInfoStyle">{moveElems()}</div>
 
       <div style = {{marginTop: 25}}>
-        <button onClick = {() => setInAscending(prevOrder => !prevOrder)} disabled = {history.length === 1}>
+        <button className = "sortButton" onClick = {() => setInAscending(prevOrder => !prevOrder)} disabled = {history.length === 1}>
           {inAscending ? "Display in descending order" : "Display in ascending order"}
         </button>
       </div>
 
-      <div className = "board-and-statistics">
+      <div className = "boardAndStatistics">
         <Board squares={history[stepNumber].squares} onClick={handleClick} winner = {winner} combination = {combination} isDraw = {isDraw}/>
 
         <div className = "utilStyle">
           <button
+            className = "restartGameButton"
             disabled={winner || isDraw ? false : true}
             onClick={() => {
               setHistory([{squares: Array(9).fill(null), row: null, col: null}]);
@@ -158,6 +159,7 @@ export default function Game() {
             <h4>X-score: {xScore}</h4>
             <h4>O-score: {oScore}</h4>
             <button
+              className = "resetScoreButton"
               onClick={() => {
                 setXScore(0);
                 setOScore(0);

@@ -5,52 +5,99 @@
     scroll-behavior: smooth;
 }
 
+body {
+    background: linear-gradient(to right, #E0EAFC, #CFDEF3);
+}
+
+:root {
+    --default-alignment: center;
+    --default-container-display: flex;
+    --default-width: 350px;
+}
+
+.boardAndStatistics{
+    display: flex;
+    background: linear-gradient(90deg, #4b79a1 0%, #283e51 100%);
+    gap: 125px;
+    margin-top: 50px;
+    border: 3px solid #000;
+    align-items: center;
+    justify-content: center;
+    padding: 50px;
+}
+
 .utilStyle {
-    width: 350px;
+    width: var(--default-width);
     max-width: 100%;
     margin: 35px auto;
-    display: flex;
+    display: var(--default-container-display);
     flex-direction: column;
-    gap: 10px;
-    justify-content: center;
-    align-items: center;
+    gap: 25px;
+    justify-content: var(--default-alignment);
+    align-items: var(--default-alignment);
 }
 
 .statistics {
-    display: flex;
+    display: var(--default-container-display);
     gap: 30px;
-    width: 350px;
-    justify-content: center;
-    align-items: center;
+    width: var(--default-width);
+    justify-content: var(--default-alignment);
+    align-items: var(--default-alignment);
+    color: #fff;
 }
 
 .boardStyle{
-    display: flex;
+    display: var(--default-container-display);
     flex-direction: column;
-    justify-content: center;
-    align-items: center;
+    justify-content: var(--default-alignment);
+    align-items: var(--default-alignment);
     margin-top: 100px;
+}
+
+.restartGameButton, .resetScoreButton, .moveInfoButton, .sortButton{
+    font-weight: bold;
+    padding: 10px;
+    font-size: 15px;
+    cursor: pointer;
+    background: #000;
+    color: #fff;
+}
+
+.restartGameButton:disabled, .sortButton:disabled, .resetScoreButton:disabled{
+    cursor: not-allowed;
 }
 
 .moveInfoStyle {
     display: inherit;
     gap: 10px;
     flex-wrap: wrap; 
-    align-items: center;
+    align-items: var(--default-alignment);
     margin: 0 auto;
-    justify-content: center;
+    justify-content: var(--default-alignment);
     max-width: 1250px;
     width: 100%;
 }
 
 .gridStyle {
-    border: 4px solid darkblue;
+    border: 4px solid rgb(0,0,139);
     border-radius: 10px;
-    width: 350px;
-    height: 350px;
+    width: var(--default-width);
+    height: var(--default-width);
     margin: 0 auto;
     display: grid;
     grid-template: repeat(3, 1fr) / repeat(3, 1fr);
-    margin-top: 75px;
 }
-  
+ 
+/*Media Queries*/
+
+@media (max-width: 940px){
+    .boardAndStatistics{
+        flex-direction: column;
+        gap: 5px;
+    }
+
+    .restartGameButton, .resetScoreButton, .moveInfoButton, .sortButton{
+        padding: 3px;
+        font-size: 11px;
+    }
+}
